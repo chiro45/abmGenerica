@@ -8,6 +8,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import { ButtonsTable } from "../ButtonsTable/ButtonsTable";
+import { useAppSelector } from "../../../hooks/redux";
 
 // Definimos la interfaz para cada columna de la tabla
 interface ITableColumn<T> {
@@ -19,12 +20,10 @@ interface ITableColumn<T> {
 export interface ITableProps<T> {
   columns: ITableColumn<T>[]; // Definición de las columnas de la tabla
   nameTable?: string;
-  dataTable: T[];
 }
 
 export const TableGeneric = <T extends { id: any }>({
   columns,
-  dataTable,
 }: ITableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -41,6 +40,8 @@ export const TableGeneric = <T extends { id: any }>({
   };
 
   const [rows, setRows] = useState<any[]>([]);
+
+  const dataTable = useAppSelector((state) => state.tablaReducer.dataTable);
   useEffect(() => {
     setRows(dataTable);
   }, [dataTable]);
@@ -78,7 +79,7 @@ export const TableGeneric = <T extends { id: any }>({
                               column.render ? ( // Si existe la función "render" se ejecuta
                                 column.render(row)
                               ) : column.label === "Acciones" ? ( // Si el label de la columna es "Acciones" se renderizan los botones de acción
-                                <ButtonsTable el={column} />
+                                <ButtonsTable el={row} />
                               ) : (
                                 row[column.key]
                               ) // Si no hay una función personalizada, se renderiza el contenido de la celda tal cual

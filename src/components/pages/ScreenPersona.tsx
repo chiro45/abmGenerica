@@ -5,20 +5,21 @@ import { TableGeneric } from "../ui/TableGeneric/TableGeneric";
 import { Button, CircularProgress } from "@mui/material";
 import { ModalPersona } from "../ui/modals/ModalPersona/ModalPersona";
 import { useAppDispatch } from "../../hooks/redux";
+import { openModalPersona } from "../../redux/slices/ModalReducer";
+import { setDataTable } from "../../redux/slices/TablaReducer";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const ScreenPersona = () => {
   const personaService = new PersonaService();
-  const [personas, setPersonas] = useState<IPersona[]>([]);
   // Estado para controlar la carga de datos
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useAppDispatch();
   const getPersonas = async () => {
     await personaService
       .getAll(API_URL + "api/personas")
       .then((personaData) => {
-        setPersonas(personaData);
+        dispatch(setDataTable(personaData))
         setLoading(false);
       });
   };
@@ -79,7 +80,12 @@ export const ScreenPersona = () => {
             width: "90%",
           }}
         >
-          <Button onClick={() => {}} variant="contained">
+          <Button
+            onClick={() => {
+              dispatch(openModalPersona());
+            }}
+            variant="contained"
+          >
             Agregar
           </Button>
         </div>
@@ -101,7 +107,6 @@ export const ScreenPersona = () => {
         ) : (
           <TableGeneric<IPersona>
             columns={ColumnsTablePersona}
-            dataTable={personas}
           />
         )}
       </div>

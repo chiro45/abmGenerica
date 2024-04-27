@@ -76,8 +76,9 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
             enableReinitialize={true}
             onSubmit={async (values: IPersona) => {
               if (modal.persona) {
+                console.log(modal.persona)
                 await apiPersona.put(
-                  urlapi + `api/personas/`,
+                  urlapi + `api/personas`,
                   `${modal.persona?.id}`,
                   values
                 );

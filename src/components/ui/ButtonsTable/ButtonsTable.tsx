@@ -1,7 +1,12 @@
 import { Button } from "@mui/material";
+import { useAppDispatch } from "../../../hooks/redux";
+import { openModalPersonaWithPersona } from "../../../redux/slices/ModalReducer";
 
 export const ButtonsTable = ({ el }: any) => {
-  console.log(el);
+  const dispatch = useAppDispatch();
+  const handleModalSelected = () => {
+    dispatch(openModalPersonaWithPersona(el));
+  };
   return (
     <div
       style={{
@@ -14,7 +19,7 @@ export const ButtonsTable = ({ el }: any) => {
         <span className="material-symbols-outlined">delete_forever</span>
       </Button>
 
-      <Button variant="contained">
+      <Button variant="contained" onClick={handleModalSelected}>
         <span className="material-symbols-outlined">edit</span>
       </Button>
     </div>
