@@ -1,28 +1,21 @@
 // Importación de las dependencias necesarias
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import * as Yup from "yup";
 
 import { IPersona } from "../../../../types/IPersona";
 import TextFieldValue from "../../TextFildValue/TextFildValue";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
+import { PersonaService } from "../../../../services/PersonaService";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { closeModalPersona } from "../../../../redux/slices/ModalReducer";
+const urlapi = import.meta.env.VITE_API_URL;
 
-// Definición de las propiedades que recibe el componente
-interface props {
-  showModal: boolean;
-  handleClose: () => void;
-  editing?: boolean;
-  persona?: IPersona;
+interface IModalPersona {
   getPersonas: Function;
 }
 
 // Definición del componente ModalFormulario
-export const ModalPersona = ({
-  showModal,
-  handleClose,
-  editing,
-  persona,
-  getPersonas,
-}: props) => {
+export const ModalPersona = ({ getPersonas }: IModalPersona) => {
   // Valores iniciales para el formulario
   const initialValues: IPersona = {
     id: 0,
@@ -35,23 +28,28 @@ export const ModalPersona = ({
   };
 
   // URL de la API obtenida desde las variables de entorno
-  const urlapi = import.meta.env.VITE_API_URL;
-
   const actualDate: string = new Date().toISOString().split("T")[0];
-
+  const apiPersona = new PersonaService();
   // Renderizado del componente ModalFormulario
+
+  const modal = useAppSelector((state) => state.modalReducer.openModalPersona);
+  const dispatch = useAppDispatch();
+  const handleClose = () => {
+    dispatch(closeModalPersona());
+  };
+
   return (
     <div>
       <Modal
         id={"modal"}
-        show={showModal}
+        show={modal.open}
         onHide={handleClose}
         size={"lg"}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          {editing ? (
+          {modal.persona ? (
             <Modal.Title>Editar una persona:</Modal.Title>
           ) : (
             <Modal.Title>Añadir una persona:</Modal.Title>
@@ -74,13 +72,17 @@ export const ModalPersona = ({
               firstName: Yup.string().required("Campo requerido"),
               lastName: Yup.string().required("Campo requerido"),
             })}
-            initialValues={persona ? persona : initialValues}
+            initialValues={modal.persona ? modal.persona : initialValues}
             enableReinitialize={true}
             onSubmit={async (values: IPersona) => {
-              if (editing) {
-                //await putData(urlapi + `api/personas/${persona?.id}`, values);
+              if (modal.persona) {
+                await apiPersona.put(
+                  urlapi + `api/personas/`,
+                  `${modal.persona?.id}`,
+                  values
+                );
               } else {
-                //await postData(urlapi + "api/personas", values);
+                await apiPersona.post(urlapi + "api/personas", values);
               }
               getPersonas();
               handleClose();

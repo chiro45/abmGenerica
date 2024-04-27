@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const pages = [
   { title: "Persona", route: "/" },
-  { title: "Producto", route: "/producto" },
+  // { title: "Producto", route: "/producto" },
 ];
 
 export const NavBar = () => {

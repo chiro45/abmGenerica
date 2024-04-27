@@ -1,4 +1,8 @@
-export abstract class AbstractClassApiServiceGeneric<T> {
+import { AbstractCrudService } from "./AbstractCrudService";
+
+export abstract class AbstractClassApiServiceGeneric<
+  T
+> extends AbstractCrudService<T> {
   // Método protegido para realizar la solicitud genérica
   protected async request(path: string, options: RequestInit): Promise<T> {
     try {
@@ -6,6 +10,7 @@ export abstract class AbstractClassApiServiceGeneric<T> {
       const response = await fetch(path, options);
       // Verifica si la respuesta es exitosa
       if (!response.ok) {
+        console.log(response.statusText);
         // Si no es exitosa, lanza un error con el mensaje de estado de la respuesta
         throw new Error(response.statusText);
       }
@@ -16,57 +21,71 @@ export abstract class AbstractClassApiServiceGeneric<T> {
       return Promise.reject(error);
     }
   }
+  // Método protegido para realizar la solicitud genérica
+  protected async requestAll(path: string, options: RequestInit): Promise<T[]> {
+    try {
+      const response = await fetch(path, options);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 
-  // Método para realizar una solicitud GET
-  async get(path: string): Promise<T> {
-    // Configura las opciones de la solicitud GET
+  // Implementación de los métodos de la interfaz AbstractCrudService
+  async get(url: string, id: string): Promise<T> {
+    const path = `${url}/${id}`;
     const options: RequestInit = {
       method: "GET",
     };
-    // Llama al método request con la ruta y las opciones proporcionadas
     return this.request(path, options);
   }
 
-  // Método para realizar una solicitud POST
-  async post(path: string, data: T): Promise<T> {
-    // Configura las opciones de la solicitud POST incluyendo los datos a enviar
+  async getAll(url: string): Promise<T[]> {
+    const path = url;
+    const options: RequestInit = {
+      method: "GET",
+    };
+    return this.requestAll(path, options);
+  }
+
+  async post(url: string, data: T): Promise<T> {
+    const path = url;
     const options: RequestInit = {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data), // Convierte los datos a JSON y los incluye en el cuerpo de la solicitud
+      body: JSON.stringify(data),
     };
-    // Llama al método request con la ruta y las opciones proporcionadas
+
     return this.request(path, options);
   }
 
-  // Método para realizar una solicitud PUT
-  async put(path: string, data: T): Promise<T> {
-    // Configura las opciones de la solicitud PUT incluyendo los datos a enviar
+  async put(url: string, id: string, data: T): Promise<T> {
+    const path = `${url}/${id}`;
     const options: RequestInit = {
       method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data), // Convierte los datos a JSON y los incluye en el cuerpo de la solicitud
+      body: JSON.stringify(data),
     };
-    // Llama al método request con la ruta y las opciones proporcionadas
     return this.request(path, options);
   }
 
-  // Método para realizar una solicitud DELETE
-  async delete(path: string): Promise<void> {
-    // Configura las opciones de la solicitud DELETE
+  async delete(url: string, id: string): Promise<void> {
+    const path = `${url}/${id}`;
     const options: RequestInit = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
     };
-    // Llama al método request con la ruta y las opciones proporcionadas
     await this.request(path, options);
   }
 }

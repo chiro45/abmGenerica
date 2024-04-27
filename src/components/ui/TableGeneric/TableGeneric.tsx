@@ -19,19 +19,17 @@ interface ITableColumn<T> {
 export interface ITableProps<T> {
   columns: ITableColumn<T>[]; // Definición de las columnas de la tabla
   nameTable?: string;
-  urlFetch: string;
   dataTable: T[];
 }
 
-export const TableGeneric = <T extends { id?: any }>({
+export const TableGeneric = <T extends { id: any }>({
   columns,
-  urlFetch,
   dataTable,
 }: ITableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -78,9 +76,9 @@ export const TableGeneric = <T extends { id?: any }>({
                           <TableCell key={i} align={"center"}>
                             {
                               column.render ? ( // Si existe la función "render" se ejecuta
-                                column.render(row[column.key])
+                                column.render(row)
                               ) : column.label === "Acciones" ? ( // Si el label de la columna es "Acciones" se renderizan los botones de acción
-                                <ButtonsTable />
+                                <ButtonsTable el={column} />
                               ) : (
                                 row[column.key]
                               ) // Si no hay una función personalizada, se renderiza el contenido de la celda tal cual
