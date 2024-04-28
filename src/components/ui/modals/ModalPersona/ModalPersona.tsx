@@ -7,7 +7,7 @@ import TextFieldValue from "../../TextFildValue/TextFildValue";
 import { Form, Formik } from "formik";
 import { PersonaService } from "../../../../services/PersonaService";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { closeModalPersona } from "../../../../redux/slices/ModalReducer";
+import { toggleModal } from "../../../../redux/slices/ModalReducer";
 const urlapi = import.meta.env.VITE_API_URL;
 
 interface IModalPersona {
@@ -32,24 +32,27 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
   const apiPersona = new PersonaService();
   // Renderizado del componente ModalFormulario
 
-  const modal = useAppSelector((state) => state.modalReducer.openModalPersona);
+  const modal = useAppSelector((state) => state.modalReducer.modalPersona);
+  const elementActive = useAppSelector(
+    (state) => state.tablaReducer.elementActive
+  );
   const dispatch = useAppDispatch();
   const handleClose = () => {
-    dispatch(closeModalPersona());
+    dispatch(toggleModal({ modalName: "modalPersona" }));
   };
 
   return (
     <div>
       <Modal
         id={"modal"}
-        show={modal.open}
+        show={modal}
         onHide={handleClose}
         size={"lg"}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          {modal.persona ? (
+          {elementActive ? (
             <Modal.Title>Editar una persona:</Modal.Title>
           ) : (
             <Modal.Title>Añadir una persona:</Modal.Title>
@@ -72,14 +75,13 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
               firstName: Yup.string().required("Campo requerido"),
               lastName: Yup.string().required("Campo requerido"),
             })}
-            initialValues={modal.persona ? modal.persona : initialValues}
+            initialValues={elementActive ? elementActive : initialValues}
             enableReinitialize={true}
             onSubmit={async (values: IPersona) => {
-              if (modal.persona) {
-                console.log(modal.persona)
+              if (elementActive) {
                 await apiPersona.put(
                   urlapi + `api/personas`,
-                  `${modal.persona?.id}`,
+                  `${elementActive?.id}`,
                   values
                 );
               } else {

@@ -5,8 +5,10 @@ import { TableGeneric } from "../ui/TableGeneric/TableGeneric";
 import { Button, CircularProgress } from "@mui/material";
 import { ModalPersona } from "../ui/modals/ModalPersona/ModalPersona";
 import { useAppDispatch } from "../../hooks/redux";
-import { openModalPersona } from "../../redux/slices/ModalReducer";
+
 import { setDataTable } from "../../redux/slices/TablaReducer";
+import { toggleModal } from "../../redux/slices/ModalReducer";
+import Swal from "sweetalert2";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,7 +21,7 @@ export const ScreenPersona = () => {
     await personaService
       .getAll(API_URL + "api/personas")
       .then((personaData) => {
-        dispatch(setDataTable(personaData))
+        dispatch(setDataTable(personaData));
         setLoading(false);
       });
   };
@@ -69,6 +71,25 @@ export const ScreenPersona = () => {
     { label: "Acciones", key: "acciones" },
   ];
 
+  const handleDelete = async (id: string) => {
+    Swal.fire({
+      title: "¿Estas seguro?",
+      text: `¿Seguro que quieres eliminar?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, Eliminar!",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        personaService.delete(API_URL + "api/personas", id).then(() => {
+          getPersonas();
+        });
+      }
+    });
+  };
+
   return (
     <>
       <div>
@@ -82,7 +103,7 @@ export const ScreenPersona = () => {
         >
           <Button
             onClick={() => {
-              dispatch(openModalPersona());
+              dispatch(toggleModal({ modalName: "modalPersona" }));
             }}
             variant="contained"
           >
@@ -106,6 +127,7 @@ export const ScreenPersona = () => {
           </div>
         ) : (
           <TableGeneric<IPersona>
+            handleDelete={handleDelete}
             columns={ColumnsTablePersona}
           />
         )}

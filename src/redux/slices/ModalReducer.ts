@@ -1,43 +1,39 @@
-// src/features/counter/counterSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IPersona } from "../../types/IPersona";
 
-interface IInitialState {
-  openModalPersona: {
-    open: boolean;
-    persona: IPersona | null;
-  };
+// Definimos el estado inicial
+interface IModalState {
+  modalPersona: boolean;
 }
 
-const initialState: IInitialState = {
-  openModalPersona: {
-    open: false,
-    persona: null,
-  },
+const initialState: IModalState = {
+  modalPersona: false,
 };
 
-const ModalReducer = createSlice({
-  name: "modalReducer",
+interface IPayloadAction {
+  modalName: "modalPersona";
+}
+
+// Creamos un slice con Redux Toolkit
+const modalsSlice = createSlice({
+  name: "modals",
   initialState,
   reducers: {
-    openModalPersonaWithPersona(state, action: PayloadAction<IPersona>) {
-      state.openModalPersona.open = true;
-      state.openModalPersona.persona = action.payload;
-    },
-    openModalPersona(state) {
-      state.openModalPersona.open = true;
-      state.openModalPersona.persona = null;
-    },
-    closeModalPersona(state) {
-      state.openModalPersona.open = false;
-      state.openModalPersona.persona = null;
+    toggleModal(state, action: PayloadAction<IPayloadAction>) {
+      const modalName = action.payload.modalName;
+      // Invertimos el valor del modal correspondiente
+
+      for (const key in state) {
+        if (key !== modalName) {
+          state[modalName] = false;
+        }
+      }
+      state[modalName] = !state[modalName];
     },
   },
 });
 
-export const {
-  openModalPersonaWithPersona,
-  openModalPersona,
-  closeModalPersona,
-} = ModalReducer.actions;
-export default ModalReducer.reducer;
+// Exportamos los actions generados por el slice
+export const { toggleModal } = modalsSlice.actions;
+
+// Exportamos el reducer generado por el slice
+export default modalsSlice.reducer;
