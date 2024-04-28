@@ -8,6 +8,7 @@ import { Form, Formik } from "formik";
 import { PersonaService } from "../../../../services/PersonaService";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { toggleModal } from "../../../../redux/slices/ModalReducer";
+import { removeElementActive } from "../../../../redux/slices/TablaReducer";
 const urlapi = import.meta.env.VITE_API_URL;
 
 interface IModalPersona {
@@ -39,6 +40,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
   const dispatch = useAppDispatch();
   const handleClose = () => {
     dispatch(toggleModal({ modalName: "modalPersona" }));
+    dispatch(removeElementActive());
   };
 
   return (
