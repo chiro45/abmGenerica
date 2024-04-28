@@ -71,7 +71,7 @@ export const ScreenPersona = () => {
     { label: "Acciones", key: "acciones" },
   ];
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     Swal.fire({
       title: "¿Estas seguro?",
       text: `¿Seguro que quieres eliminar?`,
@@ -83,7 +83,7 @@ export const ScreenPersona = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        personaService.delete(API_URL + "api/personas", id).then(() => {
+        personaService.delete(API_URL + `api/personas`, `${id}`).then(() => {
           getPersonas();
         });
       }
