@@ -2,11 +2,17 @@ import { Button } from "@mui/material";
 import { useAppDispatch } from "../../../hooks/redux";
 import { toggleModal } from "../../../redux/slices/ModalReducer";
 import { setElementActive } from "../../../redux/slices/TablaReducer";
+import { IPersona } from "../../../types/IPersona";
 
-export const ButtonsTable = ({ el, handleDelete }: any) => {
+interface IButtonsTable {
+  el: IPersona;
+  handleDelete: (id: number) => void;
+}
+
+export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
   const dispatch = useAppDispatch();
   const handleModalSelected = () => {
-    dispatch(setElementActive(el));
+    dispatch(setElementActive({ element: el }));
     dispatch(toggleModal({ modalName: "modalPersona" }));
   };
   const handleDeleteItem = () => {

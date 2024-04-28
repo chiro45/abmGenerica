@@ -19,7 +19,7 @@ interface ITableColumn<T> {
 
 export interface ITableProps<T> {
   columns: ITableColumn<T>[]; // Definición de las columnas de la tabla
-  handleDelete: (id: string) => void;
+  handleDelete: (id: number) => void;
 }
 
 export const TableGeneric = <T extends { id: any }>({

@@ -12,6 +12,11 @@ const initialState: IInitialState = {
   elementActive: null,
 };
 
+interface PayloadActionCustom {
+  element: IPersona;
+}
+
+
 const TablaReducer = createSlice({
   name: "TablaReducer",
   initialState,
@@ -19,8 +24,8 @@ const TablaReducer = createSlice({
     setDataTable(state, action: PayloadAction<any[]>) {
       state.dataTable = action.payload;
     },
-    setElementActive(state, action: PayloadAction<any>) {
-      state.elementActive = action.payload;
+    setElementActive(state, action: PayloadAction<PayloadActionCustom>) {
+      state.elementActive = action.payload.element;
     },
     removeElementActive(state) {
       state.elementActive = null;
