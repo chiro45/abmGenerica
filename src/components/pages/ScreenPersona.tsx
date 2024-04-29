@@ -17,7 +17,7 @@ export const ScreenPersona = () => {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-  const personaService = new PersonaService();
+  const personaService = new PersonaService(API_URL + "/personas");
   const dispatch = useAppDispatch();
 
   // Columnas de la tabla de personas
@@ -76,7 +76,7 @@ export const ScreenPersona = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // Eliminar la persona si se confirma
-        personaService.delete(API_URL + `api/personas`, `${id}`).then(() => {
+        personaService.delete(id).then(() => {
           getPersonas();
         });
       }
@@ -84,12 +84,10 @@ export const ScreenPersona = () => {
   };
   // Función para obtener las personas
   const getPersonas = async () => {
-    await personaService
-      .getAll(API_URL + "api/personas")
-      .then((personaData) => {
-        dispatch(setDataTable(personaData));
-        setLoading(false);
-      });
+    await personaService.getAll().then((personaData) => {
+      dispatch(setDataTable(personaData));
+      setLoading(false);
+    });
   };
 
   // Efecto para cargar los datos al inicio

@@ -8,7 +8,7 @@ import { Form, Formik } from "formik";
 import { PersonaService } from "../../../../services/PersonaService";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { removeElementActive } from "../../../../redux/slices/TablaReducer";
-const urlapi = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Interfaz para los props del componente ModalPersona
 interface IModalPersona {
@@ -36,7 +36,7 @@ export const ModalPersona = ({
 
   // URL de la API obtenida desde las variables de entorno
   const actualDate: string = new Date().toISOString().split("T")[0];
-  const apiPersona = new PersonaService();
+  const apiPersona = new PersonaService(API_URL + "/personas");
 
   const elementActive = useAppSelector(
     (state) => state.tablaReducer.elementActive
@@ -91,13 +91,9 @@ export const ModalPersona = ({
             onSubmit={async (values: IPersona) => {
               // Enviar los datos al servidor al enviar el formulario
               if (elementActive) {
-                await apiPersona.put(
-                  urlapi + `api/personas`,
-                  `${elementActive?.id}`,
-                  values
-                );
+                await apiPersona.put(elementActive?.id, values);
               } else {
-                await apiPersona.post(urlapi + "api/personas", values);
+                await apiPersona.post(values);
               }
               // Obtener las personas actualizadas y cerrar el modal
               getPersonas();
