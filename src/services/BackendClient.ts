@@ -1,4 +1,4 @@
-// Importación de la clase abstracta AbstractCrudService
+// Importación de la clase abstracta AbstractBackendClient
 import { AbstractBackendClient } from "./AbstractBackendClient";
 
 // Clase abstracta que proporciona métodos genéricos para interactuar con una API
