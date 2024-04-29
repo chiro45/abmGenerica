@@ -7,18 +7,22 @@ import TextFieldValue from "../../TextFildValue/TextFildValue";
 import { Form, Formik } from "formik";
 import { PersonaService } from "../../../../services/PersonaService";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { toggleModal } from "../../../../redux/slices/ModalReducer";
 import { removeElementActive } from "../../../../redux/slices/TablaReducer";
-import {  useState } from "react";
 const urlapi = import.meta.env.VITE_API_URL;
 
 // Interfaz para los props del componente ModalPersona
 interface IModalPersona {
   getPersonas: Function; // Función para obtener las personas
+  openModal: boolean;
+  setOpenModal: (state: boolean) => void;
 }
 
 // Definición del componente ModalPersona
-export const ModalPersona = ({ getPersonas }: IModalPersona) => {
+export const ModalPersona = ({
+  getPersonas,
+  openModal,
+  setOpenModal,
+}: IModalPersona) => {
   // Valores iniciales para el formulario
   const initialValues: IPersona = {
     id: 0,
@@ -29,13 +33,11 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
     firstName: "",
     lastName: "",
   };
-  const [clicked, setClicked] = useState(false);
+
   // URL de la API obtenida desde las variables de entorno
   const actualDate: string = new Date().toISOString().split("T")[0];
   const apiPersona = new PersonaService();
 
-  // Estado del modal y elemento activo obtenidos del estado global
-  const modal = useAppSelector((state) => state.modalReducer.modalPersona);
   const elementActive = useAppSelector(
     (state) => state.tablaReducer.elementActive
   );
@@ -43,17 +45,16 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
 
   // Función para cerrar el modal
   const handleClose = () => {
-    dispatch(toggleModal({ modalName: "modalPersona" }));
+    setOpenModal(false);
     dispatch(removeElementActive());
   };
-  
 
   return (
     <div>
       {/* Componente Modal de React Bootstrap */}
       <Modal
         id={"modal"}
-        show={modal}
+        show={openModal}
         onHide={handleClose}
         size={"lg"}
         backdrop="static"

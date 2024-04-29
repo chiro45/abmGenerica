@@ -20,11 +20,13 @@ interface ITableColumn<T> {
 export interface ITableProps<T> {
   columns: ITableColumn<T>[]; // Definición de las columnas de la tabla
   handleDelete: (id: number) => void; // Función para manejar la eliminación de un elemento
+  setOpenModal: (state: boolean) => void;
 }
 
 export const TableGeneric = <T extends { id: any }>({
   columns,
   handleDelete,
+  setOpenModal,
 }: ITableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -96,6 +98,7 @@ export const TableGeneric = <T extends { id: any }>({
                                 <ButtonsTable
                                   el={row}
                                   handleDelete={handleDelete}
+                                  setOpenModal={setOpenModal}
                                 />
                               ) : (
                                 row[column.key]

@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import { useAppDispatch } from "../../../hooks/redux";
-import { toggleModal } from "../../../redux/slices/ModalReducer";
 import { setElementActive } from "../../../redux/slices/TablaReducer";
 import { IPersona } from "../../../types/IPersona";
 
@@ -8,9 +7,14 @@ import { IPersona } from "../../../types/IPersona";
 interface IButtonsTable {
   el: IPersona; // Elemento de tipo IPersona
   handleDelete: (id: number) => void; // Función para manejar la eliminación de un elemento
+  setOpenModal: (state: boolean) => void; // Función para manejar la eliminación de un elemento
 }
 
-export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
+export const ButtonsTable = ({
+  el,
+  handleDelete,
+  setOpenModal,
+}: IButtonsTable) => {
   const dispatch = useAppDispatch();
 
   // Función para manejar la selección del modal para editar
@@ -18,7 +22,7 @@ export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
     // Establecer el elemento activo en el estado
     dispatch(setElementActive({ element: el }));
     // Mostrar el modal para editar el elemento
-    dispatch(toggleModal({ modalName: "modalPersona" }));
+    setOpenModal(true);
   };
 
   // Función para manejar la eliminación de un elemento

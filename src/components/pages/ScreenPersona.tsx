@@ -7,33 +7,18 @@ import { ModalPersona } from "../ui/modals/ModalPersona/ModalPersona";
 import { useAppDispatch } from "../../hooks/redux";
 
 import { setDataTable } from "../../redux/slices/TablaReducer";
-import { toggleModal } from "../../redux/slices/ModalReducer";
 import Swal from "sweetalert2";
 
 // Definición de la URL base de la API
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const ScreenPersona = () => {
-  const personaService = new PersonaService();
   // Estado para controlar la carga de datos
   const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+
+  const personaService = new PersonaService();
   const dispatch = useAppDispatch();
-
-  // Función para obtener las personas
-  const getPersonas = async () => {
-    await personaService
-      .getAll(API_URL + "api/personas")
-      .then((personaData) => {
-        dispatch(setDataTable(personaData));
-        setLoading(false);
-      });
-  };
-
-  // Efecto para cargar los datos al inicio
-  useEffect(() => {
-    setLoading(true);
-    getPersonas();
-  }, []);
 
   // Columnas de la tabla de personas
   const ColumnsTablePersona = [
@@ -97,6 +82,21 @@ export const ScreenPersona = () => {
       }
     });
   };
+  // Función para obtener las personas
+  const getPersonas = async () => {
+    await personaService
+      .getAll(API_URL + "api/personas")
+      .then((personaData) => {
+        dispatch(setDataTable(personaData));
+        setLoading(false);
+      });
+  };
+
+  // Efecto para cargar los datos al inicio
+  useEffect(() => {
+    setLoading(true);
+    getPersonas();
+  }, []);
 
   return (
     <>
@@ -112,7 +112,7 @@ export const ScreenPersona = () => {
           {/* Botón para abrir el modal de agregar persona */}
           <Button
             onClick={() => {
-              dispatch(toggleModal({ modalName: "modalPersona" }));
+              setOpenModal(true);
             }}
             variant="contained"
           >
@@ -140,12 +140,17 @@ export const ScreenPersona = () => {
           <TableGeneric<IPersona>
             handleDelete={handleDelete}
             columns={ColumnsTablePersona}
+            setOpenModal={setOpenModal}
           />
         )}
       </div>
 
       {/* Modal para agregar o editar una persona */}
-      <ModalPersona getPersonas={getPersonas} />
+      <ModalPersona
+        getPersonas={getPersonas}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   );
 };
