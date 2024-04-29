@@ -1,10 +1,8 @@
 // Importación de la clase abstracta AbstractCrudService
-import { AbstractCrudService } from "./AbstractCrudService";
+import { AbstractBackendClient } from "./AbstractBackendClient";
 
 // Clase abstracta que proporciona métodos genéricos para interactuar con una API
-export abstract class AbstractClassApiServiceGeneric<
-  T
-> extends AbstractCrudService<T> {
+export abstract class BackendClient<T> extends AbstractBackendClient<T> {
   // Método protegido para realizar una solicitud genérica
   protected async request(path: string, options: RequestInit): Promise<T> {
     try {
