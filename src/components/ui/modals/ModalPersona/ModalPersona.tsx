@@ -9,6 +9,7 @@ import { PersonaService } from "../../../../services/PersonaService";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { toggleModal } from "../../../../redux/slices/ModalReducer";
 import { removeElementActive } from "../../../../redux/slices/TablaReducer";
+import {  useState } from "react";
 const urlapi = import.meta.env.VITE_API_URL;
 
 // Interfaz para los props del componente ModalPersona
@@ -28,7 +29,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
     firstName: "",
     lastName: "",
   };
-
+  const [clicked, setClicked] = useState(false);
   // URL de la API obtenida desde las variables de entorno
   const actualDate: string = new Date().toISOString().split("T")[0];
   const apiPersona = new PersonaService();
@@ -45,6 +46,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
     dispatch(toggleModal({ modalName: "modalPersona" }));
     dispatch(removeElementActive());
   };
+  
 
   return (
     <div>

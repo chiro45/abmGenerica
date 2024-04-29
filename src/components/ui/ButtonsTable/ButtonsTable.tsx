@@ -34,14 +34,13 @@ export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
         justifyContent: "space-around",
       }}
     >
-      {/* Botón para eliminar el elemento */}
-      <Button variant="contained" onClick={handleDeleteItem}>
-        <span className="material-symbols-outlined">delete_forever</span>
-      </Button>
-
       {/* Botón para editar el elemento */}
       <Button variant="contained" onClick={handleModalSelected}>
         <span className="material-symbols-outlined">edit</span>
+      </Button>
+      {/* Botón para eliminar el elemento */}
+      <Button variant="contained" color="error" onClick={handleDeleteItem}>
+        <span className="material-symbols-outlined">delete_forever</span>
       </Button>
     </div>
   );
