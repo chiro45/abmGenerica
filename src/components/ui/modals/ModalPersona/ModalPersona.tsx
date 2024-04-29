@@ -11,11 +11,12 @@ import { toggleModal } from "../../../../redux/slices/ModalReducer";
 import { removeElementActive } from "../../../../redux/slices/TablaReducer";
 const urlapi = import.meta.env.VITE_API_URL;
 
+// Interfaz para los props del componente ModalPersona
 interface IModalPersona {
-  getPersonas: Function;
+  getPersonas: Function; // Función para obtener las personas
 }
 
-// Definición del componente ModalFormulario
+// Definición del componente ModalPersona
 export const ModalPersona = ({ getPersonas }: IModalPersona) => {
   // Valores iniciales para el formulario
   const initialValues: IPersona = {
@@ -31,13 +32,15 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
   // URL de la API obtenida desde las variables de entorno
   const actualDate: string = new Date().toISOString().split("T")[0];
   const apiPersona = new PersonaService();
-  // Renderizado del componente ModalFormulario
 
+  // Estado del modal y elemento activo obtenidos del estado global
   const modal = useAppSelector((state) => state.modalReducer.modalPersona);
   const elementActive = useAppSelector(
     (state) => state.tablaReducer.elementActive
   );
   const dispatch = useAppDispatch();
+
+  // Función para cerrar el modal
   const handleClose = () => {
     dispatch(toggleModal({ modalName: "modalPersona" }));
     dispatch(removeElementActive());
@@ -45,6 +48,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
 
   return (
     <div>
+      {/* Componente Modal de React Bootstrap */}
       <Modal
         id={"modal"}
         show={modal}
@@ -54,6 +58,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
+          {/* Título del modal dependiendo de si se está editando o añadiendo una persona */}
           {elementActive ? (
             <Modal.Title>Editar una persona:</Modal.Title>
           ) : (
@@ -61,6 +66,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
           )}
         </Modal.Header>
         <Modal.Body>
+          {/* Componente Formik para el formulario */}
           <Formik
             validationSchema={Yup.object({
               phoneNumber: Yup.string().required("Campo requerido"),
@@ -80,6 +86,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
             initialValues={elementActive ? elementActive : initialValues}
             enableReinitialize={true}
             onSubmit={async (values: IPersona) => {
+              // Enviar los datos al servidor al enviar el formulario
               if (elementActive) {
                 await apiPersona.put(
                   urlapi + `api/personas`,
@@ -89,14 +96,17 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
               } else {
                 await apiPersona.post(urlapi + "api/personas", values);
               }
+              // Obtener las personas actualizadas y cerrar el modal
               getPersonas();
               handleClose();
             }}
           >
             {() => (
               <>
+                {/* Formulario */}
                 <Form autoComplete="off" className="form-obraAlta">
                   <div className="container_Form_Ingredientes">
+                    {/* Campos del formulario */}
                     <TextFieldValue
                       label="Nombre:"
                       name="firstName"
@@ -136,6 +146,7 @@ export const ModalPersona = ({ getPersonas }: IModalPersona) => {
                       placeholder="Fecha de nacimiento"
                     />
                   </div>
+                  {/* Botón para enviar el formulario */}
                   <div className="d-flex justify-content-end">
                     <Button variant="success" type="submit">
                       Enviar

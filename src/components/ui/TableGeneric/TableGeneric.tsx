@@ -19,7 +19,7 @@ interface ITableColumn<T> {
 
 export interface ITableProps<T> {
   columns: ITableColumn<T>[]; // Definición de las columnas de la tabla
-  handleDelete: (id: number) => void;
+  handleDelete: (id: number) => void; // Función para manejar la eliminación de un elemento
 }
 
 export const TableGeneric = <T extends { id: any }>({
@@ -29,10 +29,12 @@ export const TableGeneric = <T extends { id: any }>({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  // Función para cambiar de página
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
+  // Función para cambiar el número de filas por página
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -40,12 +42,17 @@ export const TableGeneric = <T extends { id: any }>({
     setPage(0);
   };
 
+  // Estado para almacenar las filas de la tabla
   const [rows, setRows] = useState<any[]>([]);
 
+  // Obtener los datos de la tabla del estado global
   const dataTable = useAppSelector((state) => state.tablaReducer.dataTable);
+
+  // Actualizar las filas cuando cambien los datos de la tabla
   useEffect(() => {
     setRows(dataTable);
   }, [dataTable]);
+
   return (
     <div
       style={{
@@ -55,9 +62,13 @@ export const TableGeneric = <T extends { id: any }>({
         alignItems: "center",
       }}
     >
+      {/* Contenedor del componente Paper */}
       <Paper sx={{ width: "90%", overflow: "hidden" }}>
+        {/* Contenedor de la tabla */}
         <TableContainer sx={{ maxHeight: "80vh" }}>
+          {/* Tabla */}
           <Table stickyHeader aria-label="sticky table">
+            {/* Encabezado de la tabla */}
             <TableHead>
               <TableRow>
                 {columns.map((column, i: number) => (
@@ -67,12 +78,14 @@ export const TableGeneric = <T extends { id: any }>({
                 ))}
               </TableRow>
             </TableHead>
+            {/* Cuerpo de la tabla */}
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index: number) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {/* Celdas de la fila */}
                       {columns.map((column, i: number) => {
                         return (
                           <TableCell key={i} align={"center"}>
@@ -97,6 +110,7 @@ export const TableGeneric = <T extends { id: any }>({
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Paginación de la tabla */}
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"

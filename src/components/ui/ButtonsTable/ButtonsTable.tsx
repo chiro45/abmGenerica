@@ -4,20 +4,28 @@ import { toggleModal } from "../../../redux/slices/ModalReducer";
 import { setElementActive } from "../../../redux/slices/TablaReducer";
 import { IPersona } from "../../../types/IPersona";
 
+// Interfaz para los props del componente
 interface IButtonsTable {
-  el: IPersona;
-  handleDelete: (id: number) => void;
+  el: IPersona; // Elemento de tipo IPersona
+  handleDelete: (id: number) => void; // Función para manejar la eliminación de un elemento
 }
 
 export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
   const dispatch = useAppDispatch();
+
+  // Función para manejar la selección del modal para editar
   const handleModalSelected = () => {
+    // Establecer el elemento activo en el estado
     dispatch(setElementActive({ element: el }));
+    // Mostrar el modal para editar el elemento
     dispatch(toggleModal({ modalName: "modalPersona" }));
   };
+
+  // Función para manejar la eliminación de un elemento
   const handleDeleteItem = () => {
-    handleDelete(el.id);
+    handleDelete(el.id); // Llamar a la función handleDelete con el ID del elemento
   };
+
   return (
     <div
       style={{
@@ -26,10 +34,12 @@ export const ButtonsTable = ({ el, handleDelete }: IButtonsTable) => {
         justifyContent: "space-around",
       }}
     >
+      {/* Botón para eliminar el elemento */}
       <Button variant="contained" onClick={handleDeleteItem}>
         <span className="material-symbols-outlined">delete_forever</span>
       </Button>
 
+      {/* Botón para editar el elemento */}
       <Button variant="contained" onClick={handleModalSelected}>
         <span className="material-symbols-outlined">edit</span>
       </Button>

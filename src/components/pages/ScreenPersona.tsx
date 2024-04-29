@@ -10,6 +10,7 @@ import { setDataTable } from "../../redux/slices/TablaReducer";
 import { toggleModal } from "../../redux/slices/ModalReducer";
 import Swal from "sweetalert2";
 
+// Definición de la URL base de la API
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const ScreenPersona = () => {
@@ -17,6 +18,8 @@ export const ScreenPersona = () => {
   // Estado para controlar la carga de datos
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+
+  // Función para obtener las personas
   const getPersonas = async () => {
     await personaService
       .getAll(API_URL + "api/personas")
@@ -26,11 +29,13 @@ export const ScreenPersona = () => {
       });
   };
 
+  // Efecto para cargar los datos al inicio
   useEffect(() => {
     setLoading(true);
     getPersonas();
   }, []);
 
+  // Columnas de la tabla de personas
   const ColumnsTablePersona = [
     {
       label: "id",
@@ -71,7 +76,9 @@ export const ScreenPersona = () => {
     { label: "Acciones", key: "acciones" },
   ];
 
+  // Función para manejar el borrado de una persona
   const handleDelete = async (id: number) => {
+    // Mostrar confirmación antes de eliminar
     Swal.fire({
       title: "¿Estas seguro?",
       text: `¿Seguro que quieres eliminar?`,
@@ -83,6 +90,7 @@ export const ScreenPersona = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
+        // Eliminar la persona si se confirma
         personaService.delete(API_URL + `api/personas`, `${id}`).then(() => {
           getPersonas();
         });
@@ -101,6 +109,7 @@ export const ScreenPersona = () => {
             width: "90%",
           }}
         >
+          {/* Botón para abrir el modal de agregar persona */}
           <Button
             onClick={() => {
               dispatch(toggleModal({ modalName: "modalPersona" }));
@@ -110,6 +119,7 @@ export const ScreenPersona = () => {
             Agregar
           </Button>
         </div>
+        {/* Mostrar indicador de carga mientras se cargan los datos */}
         {loading ? (
           <div
             style={{
@@ -126,6 +136,7 @@ export const ScreenPersona = () => {
             <h2>Cargando...</h2>
           </div>
         ) : (
+          // Mostrar la tabla de personas una vez que los datos se han cargado
           <TableGeneric<IPersona>
             handleDelete={handleDelete}
             columns={ColumnsTablePersona}
@@ -133,6 +144,7 @@ export const ScreenPersona = () => {
         )}
       </div>
 
+      {/* Modal para agregar o editar una persona */}
       <ModalPersona getPersonas={getPersonas} />
     </>
   );
