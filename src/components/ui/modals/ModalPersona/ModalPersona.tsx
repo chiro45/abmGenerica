@@ -25,7 +25,7 @@ export const ModalPersona = ({
 }: IModalPersona) => {
   // Valores iniciales para el formulario
   const initialValues: IPersona = {
-    id: "0",
+    id: `${new Date().getMilliseconds().toFixed(2)}`,
     phoneNumber: "",
     adress: "",
     birthdate: "" as any,
