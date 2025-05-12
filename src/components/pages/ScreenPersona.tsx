@@ -25,7 +25,7 @@ export const ScreenPersona = () => {
     {
       label: "id",
       key: "id",
-      render: (persona: IPersona) => (persona?.id ? persona.id : 0),
+      render: (persona: IPersona) => (persona?.id ? `${persona.id}` : `0`),
     },
     { label: "Nombre", key: "firstName" },
     { label: "Apellido", key: "lastName" },
